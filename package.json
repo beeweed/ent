@@ -1,0 +1,8 @@
+{
+  "name": "ai-chatbot",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "build:local": "cd frontend && bun run build"
+  }
+}

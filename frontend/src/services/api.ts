@@ -1,4 +1,4 @@
-const API_BASE_URL = 'https://8000-ixagkrgj2n7vnx401pw98.e2b.app';
+const API_BASE_URL = 'https://8080-itd6uk5c8d7p5wkspytjf.e2b.app';
 
 export interface ChatMessage {
   role: 'user' | 'assistant' | 'system';

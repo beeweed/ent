@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState, useCallback } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { useChatStore } from '../store/chatStore';
 import { streamChat } from '../services/api';
@@ -6,7 +6,6 @@ import { ChatMessage } from './ChatMessage';
 import { ChatInput } from './ChatInput';
 import { TypingIndicator } from './TypingIndicator';
 import { EmptyState } from './EmptyState';
-import { ScrollArea } from './ui/scroll-area';
 
 export function ChatArea() {
   const {
@@ -19,21 +18,19 @@ export function ChatArea() {
     setIsLoading,
   } = useChatStore();
 
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [streamingMessageId, setStreamingMessageId] = useState<string | null>(null);
 
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
-
-  const scrollToBottom = () => {
-    if (scrollRef.current) {
-      const scrollContainer = scrollRef.current.querySelector('[data-radix-scroll-area-viewport]');
-      if (scrollContainer) {
-        scrollContainer.scrollTop = scrollContainer.scrollHeight;
-      }
+  const scrollToBottom = useCallback((behavior: ScrollBehavior = 'smooth') => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior, block: 'end' });
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    scrollToBottom('smooth');
+  }, [messages, scrollToBottom]);
 
   const handleSendMessage = async (content: string) => {
     if (!apiKey || !selectedModel || isLoading) return;
@@ -56,7 +53,7 @@ export function ChatArea() {
       for await (const chunk of streamChat(apiKey, selectedModel, messagesToSend)) {
         fullResponse += chunk;
         updateLastMessage(fullResponse);
-        scrollToBottom();
+        scrollToBottom('instant');
       }
     } catch (error) {
       console.error('Chat error:', error);
@@ -74,7 +71,11 @@ export function ChatArea() {
       {messages.length === 0 ? (
         <EmptyState onSuggestionClick={handleSendMessage} />
       ) : (
-        <ScrollArea ref={scrollRef} data-design-id="messages-container" className="flex-1">
+        <div 
+          ref={scrollContainerRef}
+          data-design-id="messages-container" 
+          className="flex-1 overflow-y-auto scroll-smooth"
+        >
           <div className="max-w-4xl mx-auto p-4 md:p-6 space-y-6">
             <AnimatePresence mode="popLayout">
               {messages.map((message) => (
@@ -88,8 +89,9 @@ export function ChatArea() {
                 <TypingIndicator key="typing" />
               )}
             </AnimatePresence>
+            <div ref={messagesEndRef} className="h-1" />
           </div>
-        </ScrollArea>
+        </div>
       )}
       
       <ChatInput onSend={handleSendMessage} disabled={isLoading} />

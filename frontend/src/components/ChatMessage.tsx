@@ -147,7 +147,11 @@ export const ChatMessage = memo(function ChatMessage({ message, isStreaming }: C
               {message.content}
             </ReactMarkdown>
             {isStreaming && (
-              <span className="inline-block w-2 h-4 ml-1 bg-[#ff6b2c] animate-pulse rounded-sm" />
+              <span data-design-id="streaming-dots" className="inline-flex items-center gap-1 ml-2 align-middle">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#ff6b2c] animate-bounce-dot" style={{ animationDelay: '0ms' }} />
+                <span className="w-1.5 h-1.5 rounded-full bg-[#ff6b2c] animate-bounce-dot" style={{ animationDelay: '150ms' }} />
+                <span className="w-1.5 h-1.5 rounded-full bg-[#ff6b2c] animate-bounce-dot" style={{ animationDelay: '300ms' }} />
+              </span>
             )}
           </div>
         )}

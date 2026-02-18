@@ -176,6 +176,7 @@ Before completing any application, verify:
 - [ ] Icons are used (not emojis)
 - [ ] Design is professional and polished
 
+REMEMBER: A beautiful website that doesn't work is a FAILURE. A functional website that isn't beautiful is also FAILURE. Only a beautiful AND functional website is SUCCESS.
 Remember: You are building REAL applications that users will actually use. Every detail matters. Quality over speed.`;
 
 export default VIBE_CODING_SYSTEM_PROMPT;

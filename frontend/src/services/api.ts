@@ -1,4 +1,4 @@
-const API_BASE_URL = 'https://8080-iamxy3cx1p662eowl2pl8.e2b.app';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://8080-ijpdgxl2j4wbb1bfkn2iu.e2b.app';
 
 export interface ChatMessage {
   role: 'user' | 'assistant' | 'system';

@@ -6,6 +6,7 @@ import { ChatMessage } from './ChatMessage';
 import { ChatInput } from './ChatInput';
 import { TypingIndicator } from './TypingIndicator';
 import { EmptyState } from './EmptyState';
+import { VIBE_CODING_SYSTEM_PROMPT } from '../lib/systemPrompt';
 
 export function ChatArea() {
   const {
@@ -44,9 +45,17 @@ export function ChatArea() {
     setStreamingMessageId(currentMessages[currentMessages.length - 1]?.id || null);
 
     try {
-      const messagesToSend = currentMessages
+      // Prepare messages with system prompt
+      const conversationMessages = currentMessages
         .slice(0, -1)
+        .filter((m) => m.role !== 'system')
         .map((m) => ({ role: m.role, content: m.content }));
+      
+      // Prepend the vibe coding system prompt
+      const messagesToSend = [
+        { role: 'system' as const, content: VIBE_CODING_SYSTEM_PROMPT },
+        ...conversationMessages
+      ];
 
       let fullResponse = '';
       
